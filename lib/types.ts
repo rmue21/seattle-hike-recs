@@ -16,7 +16,7 @@ export interface Hike {
   sceneryTags: string[];
   crowdLevel: CrowdLevel;
   notes: string;
-  sourceUrl?: string;
+  sourceUrl: string;
 }
 
 export type TotalTimeOption =

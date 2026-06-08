@@ -57,6 +57,17 @@ const defaultPrefs: UserPreferences = {
   additionalNotes: "",
 };
 
+const radioOptionClass =
+  "flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm transition hover:border-slate-300 hover:bg-slate-50 has-checked:border-emerald-400 has-checked:bg-emerald-50 has-checked:shadow-sm has-checked:ring-1 has-checked:ring-emerald-200";
+
+const checkboxOptionClass =
+  "flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm transition hover:border-slate-300 hover:bg-slate-50 has-checked:border-emerald-400 has-checked:bg-emerald-50 has-checked:shadow-sm has-checked:ring-1 has-checked:ring-emerald-200";
+
+const fieldsetClass = "border-t border-slate-100 pt-8 pb-6";
+
+const startOverButtonClass =
+  "rounded-lg border border-emerald-300 bg-emerald-50/80 px-4 py-2 text-sm font-medium text-emerald-800 transition hover:border-emerald-400 hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2";
+
 interface DisplayRecommendation {
   result: ScoredHike;
   explanation: string;
@@ -162,25 +173,33 @@ export function HikeFinder() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <header className="mb-10 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-emerald-900 sm:text-4xl">
+      <header className="mb-6 text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-emerald-950 sm:text-4xl">
           Seattle Hike Finder
         </h1>
-        <p className="mt-3 text-lg text-slate-600">
-          Answer a few questions and get your top 3 Seattle-area hike picks.
+        <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
+          Answer a few quick questions and get your top 3 hike picks.
+        </p>
+        <p className="mx-auto mt-3 max-w-lg text-sm text-slate-500">
+          We narrow down the best hikes, then AI helps pick and explain your top matches.
         </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <fieldset className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <legend className="text-lg font-semibold text-slate-900">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-sm ring-1 ring-slate-900/5 sm:p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            Your preferences
+          </h2>
+
+        <fieldset className={`mt-6 ${fieldsetClass}`}>
+          <legend className="text-base font-semibold text-slate-900">
             1. How much total time do you have?
           </legend>
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {TOTAL_TIME_OPTIONS.map((opt) => (
               <label
                 key={opt.value}
-                className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-50"
+                className={radioOptionClass}
               >
                 <input
                   type="radio"
@@ -199,15 +218,15 @@ export function HikeFinder() {
           </div>
         </fieldset>
 
-        <fieldset className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <legend className="text-lg font-semibold text-slate-900">
+        <fieldset className={fieldsetClass}>
+          <legend className="text-base font-semibold text-slate-900">
             2. How far are you willing to drive?
           </legend>
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 grid gap-2.5">
             {DRIVE_OPTIONS.map((opt) => (
               <label
                 key={opt.value}
-                className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-50"
+                className={radioOptionClass}
               >
                 <input
                   type="radio"
@@ -226,15 +245,15 @@ export function HikeFinder() {
           </div>
         </fieldset>
 
-        <fieldset className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <legend className="text-lg font-semibold text-slate-900">
+        <fieldset className={fieldsetClass}>
+          <legend className="text-base font-semibold text-slate-900">
             3. How hard do you want the hike to be?
           </legend>
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {DIFFICULTY_OPTIONS.map((opt) => (
               <label
                 key={opt.value}
-                className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-50"
+                className={radioOptionClass}
               >
                 <input
                   type="radio"
@@ -253,16 +272,16 @@ export function HikeFinder() {
           </div>
         </fieldset>
 
-        <fieldset className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <legend className="text-lg font-semibold text-slate-900">
+        <fieldset className={fieldsetClass}>
+          <legend className="text-base font-semibold text-slate-900">
             4. What kind of experience are you looking for?
           </legend>
           <p className="mt-1 text-sm text-slate-500">Select all that apply</p>
-          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {EXPERIENCE_OPTIONS.map((opt) => (
               <label
                 key={opt.value}
-                className="flex cursor-pointer items-center gap-3 rounded-lg border border-transparent px-2 py-2 hover:bg-slate-50 has-checked:border-emerald-300 has-checked:bg-emerald-50"
+                className={checkboxOptionClass}
               >
                 <input
                   type="checkbox"
@@ -277,8 +296,8 @@ export function HikeFinder() {
           </div>
         </fieldset>
 
-        <fieldset className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <legend className="text-lg font-semibold text-slate-900">
+        <fieldset className={`${fieldsetClass} pb-2`}>
+          <legend className="text-base font-semibold text-slate-900">
             5. Anything else I should know?
           </legend>
           <textarea
@@ -288,31 +307,42 @@ export function HikeFinder() {
             }
             rows={4}
             placeholder="e.g. bringing a dog, need easy on knees, avoid crowds, prefer waterfalls..."
-            className="mt-4 w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
+            className="mt-4 w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
             disabled={loading}
           />
         </fieldset>
+        </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-lg font-semibold text-white shadow-md transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+          className="w-full rounded-xl bg-emerald-700 px-6 py-4 text-base font-semibold text-white shadow-md transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
         >
           {loading ? "Finding your hikes…" : "Find my hikes"}
         </button>
       </form>
 
       {submitted && (
-        <section id="results" className="mt-14 space-y-6">
+        <section
+          id="results"
+          className="mt-10 space-y-5 border-t border-slate-200/90 pt-10"
+        >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-2xl font-bold text-slate-900">
-              {loading ? "Finding your best hike matches…" : "Your top 3 hikes"}
-            </h2>
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+                {loading ? "Finding your best hike matches…" : "Your top 3 hikes"}
+              </h2>
+              {loading && (
+                <p className="mt-1 text-sm text-slate-500">
+                  Shortlisting candidates, then personalizing your picks.
+                </p>
+              )}
+            </div>
             {!loading && (
               <button
                 type="button"
                 onClick={handleReset}
-                className="text-sm font-medium text-emerald-700 hover:text-emerald-900"
+                className={startOverButtonClass}
               >
                 Start over
               </button>
@@ -320,27 +350,36 @@ export function HikeFinder() {
           </div>
 
           {loading && (
-            <>
-              <p className="text-sm text-slate-600" role="status">
+            <div className="space-y-5">
+              <div
+                className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-white/80 px-4 py-3 text-sm text-slate-600"
+                role="status"
+                aria-live="polite"
+              >
+                <span className="loading-dots flex gap-1" aria-hidden="true">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                </span>
                 Personalizing your recommendations…
-              </p>
-              <div className="space-y-6">
+              </div>
+              <div className="space-y-5">
                 {Array.from({ length: FINAL_COUNT }).map((_, i) => (
-                  <RecommendationSkeleton key={i} />
+                  <RecommendationSkeleton key={i} rank={i + 1} />
                 ))}
               </div>
-            </>
+            </div>
           )}
 
           {!loading && recommendations && (
             <>
               {usingLocalFallback && (
-                <p className="text-sm text-slate-500">
+                <p className="rounded-lg border border-amber-100 bg-amber-50/60 px-3 py-2 text-sm text-amber-900/80">
                   Showing local recommendations while personalized picks are
                   unavailable.
                 </p>
               )}
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {recommendations.map((rec, index) => (
                   <RecommendationCard
                     key={rec.result.hike.id}
@@ -349,6 +388,15 @@ export function HikeFinder() {
                     personalizedExplanation={rec.explanation}
                   />
                 ))}
+              </div>
+              <div className="flex justify-center pt-4">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className={startOverButtonClass}
+                >
+                  Start over
+                </button>
               </div>
             </>
           )}

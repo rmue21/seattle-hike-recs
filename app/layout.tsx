@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SeattleHikeFinder",
+  title: "Seattle Hike Finder",
   description:
     "Find your top 3 Seattle-area hikes based on time, drive, difficulty, and what you want to experience.",
 };

@@ -7,10 +7,16 @@ import type { ScoredHike } from "@/lib/types";
 interface RecommendationCardProps {
   rank: number;
   result: ScoredHike;
+  personalizedExplanation?: string;
 }
 
-export function RecommendationCard({ rank, result }: RecommendationCardProps) {
+export function RecommendationCard({
+  rank,
+  result,
+  personalizedExplanation,
+}: RecommendationCardProps) {
   const { hike, whyThisFits } = result;
+  const explanation = personalizedExplanation ?? whyThisFits;
 
   return (
     <article className="rounded-xl border border-emerald-200 bg-white p-6 shadow-sm">
@@ -78,7 +84,7 @@ export function RecommendationCard({ rank, result }: RecommendationCardProps) {
 
       <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
         <span className="font-semibold">Why this fits: </span>
-        {whyThisFits}
+        {explanation}
       </p>
     </article>
   );

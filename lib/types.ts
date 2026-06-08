@@ -56,3 +56,18 @@ export interface ScoredHike {
   score: number;
   whyThisFits: string;
 }
+
+export interface PersonalizeRequest {
+  preferences: UserPreferences;
+  hikes: ScoredHike[];
+}
+
+export interface AiRecommendation {
+  id: string;
+  rank: number;
+  explanation: string;
+}
+
+export interface PersonalizeResponse {
+  recommendations: AiRecommendation[];
+}

@@ -45,7 +45,7 @@ export function RecommendationCard({
                 rel="noopener noreferrer"
                 className="mt-1.5 inline-block text-xs font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800 hover:decoration-emerald-500"
               >
-                View additional trail information
+                Check latest trail details
               </a>
             )}
           </div>

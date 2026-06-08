@@ -164,7 +164,7 @@ export function HikeFinder() {
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <header className="mb-10 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-emerald-900 sm:text-4xl">
-          SeattleHikeFinder
+          Seattle Hike Finder
         </h1>
         <p className="mt-3 text-lg text-slate-600">
           Answer a few questions and get your top 3 Seattle-area hike picks.

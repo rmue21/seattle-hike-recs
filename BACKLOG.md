@@ -4,20 +4,7 @@ Last updated: 2026-11-17
 
 This is the working backlog for turning Seattle Hike Finder from a class prototype into a polished, public app for a UX engineering portfolio. Existing functionality stays working while it improves step by step.
 
----
-
-## Start here
-
-**Where things stand (2026-11-17):** Planning is done and your decisions are recorded (see the Decisions log). No application code has changed yet.
-
-**Next session: T01 — Show trail notes and a "verify before you go" note on each card** (Small, about 20–30 minutes)
-
-1. Read `components/RecommendationCard.tsx` and trace how a hike from `data/hikes.ts` reaches the card.
-2. Decide the wording and visual treatment of the "Good to know" section (your call; see T01).
-3. Implement it, then check it in both AI and fallback modes and at mobile width.
-4. Update this file: mark T01 done, move T02 into Now, and log any decisions.
-
-After T01, the path to a test deploy is T02, then T03, then T04. All accessibility work (T05, T07) must be done before the app is publicly promoted.
+**Starting a session? Read [START_HERE.md](START_HERE.md) instead.** It holds the current task and the first action. This file is the long-term reference; you don't need to review it every session.
 
 ---
 
@@ -58,7 +45,8 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 - Exactly **one** task in Now, and **up to three** in Next.
 - When a task moves into Now and is bigger than Small, we split it into session-sized steps first.
-- At the end of each session: update the task's status, add a line to the Done log, record any decisions, and pick the next task.
+- At the end of each session: update the task's status, add a line to the Done log, record any decisions, pick the next task, and rewrite `START_HERE.md` for it.
+- **Session check-ins:** Start each session by showing only the current task, why it matters, and the next concrete action, as in `START_HERE.md`. Show the larger plan only when asked.
 
 **Status labels for research findings**
 
@@ -84,7 +72,7 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 - T05 — Keyboard and screen reader flow (P0; must be done before public release)
 - T07 — Accessibility and motion polish (P0; must be done before public release)
-- T26 — Show how each hike matches your preferences (P1, *proposed; needs your OK*)
+- T26 — Make it clear how each hike matches your preferences (P1, *proposed; explore UX approaches first*)
 - T09 — Unit tests for scoring and API validation (P1; supports T06)
 - T06 — Explain when preferences can't all be met (P1)
 - T08 — Show total trip time on cards (P1)
@@ -99,7 +87,7 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 - **M0 — Test deploy:** T01–T04. The app is live on Vercel's default domain for testing, but not promoted.
 - **M1 — Public release:** M0 plus T05 and T07. All accessibility fixes are done before the link is promoted.
-- **M2 — Portfolio-ready:** T26, T06, T08, T12, and T17 (usability study for the case study)
+- **M2 — Portfolio-ready:** T06, T08, T12, T17 (usability study for the case study), and T26 if the exploration leads to a design
 - **M3 — Location-aware:** T09, T10, T11, then T15
 - **Beyond:** P3 items, chosen based on what the usability study shows
 
@@ -230,22 +218,35 @@ Detect conflicting or unsatisfiable preferences in the scoring logic and say so 
   - Easier after T09 (tests) and T14 (refactor).
   - Design decision for you: show "closest matches" with an explanation, suggest changing one answer ("Hard hikes here take about 5+ hours. Try Half day?"), or both?
 
-### T26 — Show how each hike matches your preferences
+### T26 — Make it clear how each hike matches your preferences
 
-**Effort:** Small–Medium · **Status:** Later · ***Proposed; needs your OK before it's scheduled***
+**Effort:** Research first (design exploration), then implementation sized once a direction is chosen · **Status:** Later · ***Proposed; explore approaches before committing to a design***
 
-Add a short, scannable checklist to each card showing how the hike compares to each answer the user gave: time, drive, difficulty, and each selected experience. Mark each as met, close, or not met, for example "Fits your half day," "Moderate, not the Hard you asked for," or "Dogs allowed." The checklist comes from the deterministic scoring, not the AI, so it stays accurate even when the AI's wording varies.
+Help users see which of their preferences a hike meets and which it doesn't. The first step is to compare a few UX approaches, not to build one. A full checklist on every card is one option, not the plan.
 
-- **Why it matters:** Today "Why this fits" is a paragraph, either AI-written or stitched together from scoring reasons. Users can't quickly check whether a hike meets their needs, or check the AI's claims. This is the most direct way to improve recommendation transparency, and it pairs naturally with T06.
-- **Done when:**
-  - [ ] Each card lists every preference the user set, with its status.
-  - [ ] Status is shown with text and an icon, not color alone.
-  - [ ] It looks and works the same in AI and fallback modes.
-  - [ ] Screen readers read it as a list.
+- **Why it matters:** Today "Why this fits" is a paragraph, either AI-written or stitched together from scoring reasons. Users can't quickly check whether a hike meets their needs, or check the AI's claims. Making matches and tradeoffs visible could make recommendations more transparent and trustworthy, and it pairs naturally with T06.
+- **Approaches to explore** (starting points, not a final list):
+  1. **Full checklist:** every preference with met, close, or not met (the original idea).
+  2. **Tradeoffs only:** show only what doesn't match, for example "Heads up: Moderate, not the Hard you asked for."
+  3. **Highlighted explanation:** keep the "Why this fits" paragraph, but visually mark the parts tied to the user's own answers.
+  4. **Expandable detail:** a collapsed "How this matches your answers" section that users can open.
+  5. **Comparison view:** a compact side-by-side of the three hikes against the user's preferences.
+- **Criteria for comparing them:**
+  - How quickly it can be scanned on a phone.
+  - Whether it's honest about mismatches.
+  - How much visual weight it adds to each card.
+  - Accessibility: not color alone, and works with screen readers.
+  - Whether it works the same with and without AI.
+  - Whether it builds or erodes trust in the AI's explanation.
+- **Done when (exploration):**
+  - [ ] 2–3 approaches are sketched as low-fidelity mockups, using real examples such as "2 to 3 hours" plus "Hard."
+  - [ ] Each is compared against the criteria above.
+  - [ ] You pick a direction, or decide not to pursue it.
+  - [ ] An implementation task is written with its own definition of done.
 - **Dependencies / open questions:**
-  - The scoring logic needs to return a result per preference instead of only a combined score and reason text. That's a small change in `lib/scoring.ts`, and tests (T09) help.
-  - Design decisions for you: checklist or chips? Should "not met" items always be shown? (I'd recommend yes, for honesty.)
-  - Overlaps with T06: T26 shows tradeoffs per hike, while T06 explains why no hike fully fits.
+  - Any approach will need the scoring logic to report results per preference, not just a combined score and reason text. That's a small change in `lib/scoring.ts`, and tests (T09) help.
+  - Overlaps with T06: T26 shows tradeoffs per hike, while T06 explains why no hike fully fits. Exploring them together could avoid two competing patterns.
+  - The usability study (T17) could test the chosen approach, or compare two of them.
 
 ### T08 — Show total trip time on cards
 
@@ -643,10 +644,13 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Contacting WTA about data use is deferred | Open to it later (R1 open question 1, R1a) |
 | 2026-11-17 | Host on Vercel with its default domain for now | Custom domain can come later (T04) |
 | 2026-11-17 | Keep this a UX-focused project, emphasizing recommendation transparency, personalization, and the hiking experience | See "Product focus"; T26 proposed in response |
+| 2026-11-17 | T26 stays proposed; explore several UX approaches before committing to a full checklist on every card | T26 reframed as a design exploration |
+| 2026-11-17 | Session check-ins show only the current task, why it matters, and the next action, unless the larger plan is requested | `START_HERE.md` holds that view; this file is the reference |
 
 ## Done log
 
 | Date | What | Link |
 |---|---|---|
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
-| 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
+| 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
+| 2026-11-17 | Planning session 3: `START_HERE.md` added for session check-ins, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |

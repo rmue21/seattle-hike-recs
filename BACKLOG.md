@@ -4,7 +4,24 @@ Last updated: 2026-11-17
 
 This is the working backlog for turning Seattle Hike Finder from a class prototype into a polished, public app for a UX engineering portfolio. Existing functionality stays working while it improves step by step.
 
-**Starting a session? Read [START_HERE.md](START_HERE.md) instead.** It holds the current task and the first action. This file is the long-term reference; you don't need to review it every session.
+---
+
+## Start here
+
+This is all you need at the start of a session. The rest of the file is the long-term reference.
+
+**Now: T01 — Show trail notes on each recommendation card**
+
+**Why it matters:** Every hike has notes like "pets are not allowed" or "can hold snow into early summer," but the card never shows them. Hikers can miss information they need to plan safely.
+
+**First action:** Open `components/RecommendationCard.tsx` and find line 26, where `hike` comes from. Then jot down what a "Good to know" section should say for one hike (for example, Marymere Falls) and how prominent it should be.
+
+**Done when:**
+- All three cards show the hike's notes, with or without AI.
+- Each card says the stats are approximate and points to the source link.
+- It reads well on a phone and with a screen reader.
+
+**Up next:** T02 — Make the AI route trust only server-side data · T03 — Add cost and abuse guardrails
 
 ---
 
@@ -45,8 +62,8 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 - Exactly **one** task in Now, and **up to three** in Next.
 - When a task moves into Now and is bigger than Small, we split it into session-sized steps first.
-- At the end of each session: update the task's status, add a line to the Done log, record any decisions, pick the next task, and rewrite `START_HERE.md` for it.
-- **Session check-ins:** Start each session by showing only the current task, why it matters, and the next concrete action, as in `START_HERE.md`. Show the larger plan only when asked.
+- At the end of each session: update the task's status, add a line to the Done log, record any decisions, pick the next task, and rewrite the "Start here" section for it.
+- **Session check-ins:** Start each session by showing only the current task, why it matters, and the next concrete action, as in "Start here." Show the larger plan only when asked.
 
 **Status labels for research findings**
 
@@ -645,7 +662,7 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Host on Vercel with its default domain for now | Custom domain can come later (T04) |
 | 2026-11-17 | Keep this a UX-focused project, emphasizing recommendation transparency, personalization, and the hiking experience | See "Product focus"; T26 proposed in response |
 | 2026-11-17 | T26 stays proposed; explore several UX approaches before committing to a full checklist on every card | T26 reframed as a design exploration |
-| 2026-11-17 | Session check-ins show only the current task, why it matters, and the next action, unless the larger plan is requested | `START_HERE.md` holds that view; this file is the reference |
+| 2026-11-17 | Session check-ins show only the current task, why it matters, and the next action, unless the larger plan is requested | The "Start here" section holds that view. A separate `START_HERE.md` was tried and dropped; everything lives in this one file. |
 
 ## Done log
 
@@ -653,4 +670,4 @@ Product and technical decisions, recorded as they're made.
 |---|---|---|
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
 | 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
-| 2026-11-17 | Planning session 3: `START_HERE.md` added for session check-ins, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
+| 2026-11-17 | Planning session 3: "Start here" section rewritten in the short check-in format, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |

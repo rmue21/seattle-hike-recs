@@ -6,6 +6,36 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 ---
 
+## Start here
+
+**Where things stand (2026-11-17):** Planning is done and your decisions are recorded (see the Decisions log). No application code has changed yet.
+
+**Next session: T01 — Show trail notes and a "verify before you go" note on each card** (Small, about 20–30 minutes)
+
+1. Read `components/RecommendationCard.tsx` and trace how a hike from `data/hikes.ts` reaches the card.
+2. Decide the wording and visual treatment of the "Good to know" section (your call; see T01).
+3. Implement it, then check it in both AI and fallback modes and at mobile width.
+4. Update this file: mark T01 done, move T02 into Now, and log any decisions.
+
+After T01, the path to a test deploy is T02, then T03, then T04. All accessibility work (T05, T07) must be done before the app is publicly promoted.
+
+---
+
+## Product focus
+
+This is a UX-focused project. Technical work earns its place by protecting users or unblocking a UX improvement. When two tasks have similar priority, prefer the one that improves the experience for hikers.
+
+| Theme | What it means | Tasks |
+|---|---|---|
+| **Recommendation transparency** | Users can see why a hike was picked, what tradeoffs it involves, and how reliable the information is | T01, T26 (proposed), T06, T08, T21 |
+| **Personalization** | Recommendations reflect where the user starts and what they care about | T11, T15, T13, T19, T23 |
+| **Hiking experience** | Planning, safety, and confidence before heading out | T01, T08, T10, T20, T21 |
+| **Inclusion** | Everyone can use the app, including keyboard and screen reader users | T05, T07 |
+| **Foundations** | Security, deployment, and code health that make the above possible | T02, T03, T04, T09, T14 |
+| **Evidence** | Learning what users actually need before building big features | T17, T18 |
+
+---
+
 ## How we use this file
 
 **Priorities**
@@ -53,21 +83,23 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 ### Later (in rough order)
 
 - T05 — Keyboard and screen reader flow (P0; must be done before public release)
-- T09 — Unit tests for scoring and API validation (P1)
+- T07 — Accessibility and motion polish (P0; must be done before public release)
+- T26 — Show how each hike matches your preferences (P1, *proposed; needs your OK*)
+- T09 — Unit tests for scoring and API validation (P1; supports T06)
 - T06 — Explain when preferences can't all be met (P1)
 - T08 — Show total trip time on cards (P1)
-- T07 — Accessibility and motion polish (P1)
-- R1 — Trail data sources investigation (Research; can run in parallel as a non-coding session)
 - T10 — Add trailhead coordinates and data provenance (P1)
 - T11 — Starting location, step 1: preset starting areas (P1)
 - T12 — Portfolio-ready presentation (P1)
+- R1 follow-ups (Research; can run in parallel as non-coding sessions)
 
 ### Milestones
 
 These are rough groupings to keep the big picture visible, not deadlines.
 
-- **M1 — Public release:** T01–T05
-- **M2 — Portfolio-ready:** T06, T07, T08, T12, and T17 (usability study for the case study)
+- **M0 — Test deploy:** T01–T04. The app is live on Vercel's default domain for testing, but not promoted.
+- **M1 — Public release:** M0 plus T05 and T07. All accessibility fixes are done before the link is promoted.
+- **M2 — Portfolio-ready:** T26, T06, T08, T12, and T17 (usability study for the case study)
 - **M3 — Location-aware:** T09, T10, T11, then T15
 - **Beyond:** P3 items, chosen based on what the usability study shows
 
@@ -134,11 +166,12 @@ Deploy the app with the OpenAI key set as a server-side environment variable, an
 - **Dependencies / open questions:**
   - Depends on T02 and T03.
   - *Verified (2026-11-17):* Vercel's free Hobby plan is limited to non-commercial personal use ([fair use guidelines](https://vercel.com/docs/limits/fair-use-guidelines)), which fits a personal portfolio project.
-  - Do you want a custom domain?
+  - *Decided (2026-11-17):* Host on Vercel using its default domain. A custom domain can come later.
+  - This deploy is for testing. The app isn't publicly promoted until T05 and T07 are done.
 
 ### T05 — Keyboard and screen reader flow for submit, results, and start over
 
-**Effort:** Medium (about 2 sessions) · **Status:** Later (required before public release)
+**Effort:** Medium (about 2 sessions) · **Status:** Later (can follow the test deploy; required before public promotion)
 
 Fix the focus and announcement problems in the main flow:
 
@@ -156,6 +189,25 @@ Fix the focus and announcement problems in the main flow:
   - [ ] The textarea has an accessible label.
   - [ ] A full keyboard-only walkthrough works, as does a screen reader walkthrough (VoiceOver or NVDA).
   - [ ] An automated check (for example, axe DevTools) reports no serious or critical issues.
+- **Dependencies / open questions:** None.
+
+### T07 — Accessibility and motion polish
+
+**Effort:** Small · **Status:** Later (can follow the test deploy; required before public promotion)
+
+Moved from P1 to P0 on 2026-11-17, following the decision that all accessibility fixes are done before the app is publicly promoted.
+
+- Respect `prefers-reduced-motion` for smooth scrolling, the loading dots, and the pulsing skeleton.
+- Style the radio and checkbox controls properly: `text-emerald-700` has no effect on native radios, so an `accent-*` color is needed.
+- Add `focus-visible` styling to the option cards.
+- Check color contrast on light gray text (for example, the `text-slate-400` resources heading).
+
+- **Why it matters:** Small details that make the app feel finished and inclusive, and that portfolio reviewers notice.
+- **Done when:**
+  - [ ] Turning on reduced motion stops scroll animation and pulsing.
+  - [ ] Selected controls show the brand color.
+  - [ ] Focus is clearly visible on every interactive element.
+  - [ ] All text meets WCAG AA contrast.
 - **Dependencies / open questions:** None.
 
 ---
@@ -178,22 +230,22 @@ Detect conflicting or unsatisfiable preferences in the scoring logic and say so 
   - Easier after T09 (tests) and T14 (refactor).
   - Design decision for you: show "closest matches" with an explanation, suggest changing one answer ("Hard hikes here take about 5+ hours. Try Half day?"), or both?
 
-### T07 — Accessibility and motion polish
+### T26 — Show how each hike matches your preferences
 
-**Effort:** Small · **Status:** Later
+**Effort:** Small–Medium · **Status:** Later · ***Proposed; needs your OK before it's scheduled***
 
-- Respect `prefers-reduced-motion` for smooth scrolling, the loading dots, and the pulsing skeleton.
-- Style the radio and checkbox controls properly: `text-emerald-700` has no effect on native radios, so an `accent-*` color is needed.
-- Add `focus-visible` styling to the option cards.
-- Check color contrast on light gray text (for example, the `text-slate-400` resources heading).
+Add a short, scannable checklist to each card showing how the hike compares to each answer the user gave: time, drive, difficulty, and each selected experience. Mark each as met, close, or not met, for example "Fits your half day," "Moderate, not the Hard you asked for," or "Dogs allowed." The checklist comes from the deterministic scoring, not the AI, so it stays accurate even when the AI's wording varies.
 
-- **Why it matters:** Small details that make the app feel finished and inclusive, and that portfolio reviewers notice.
+- **Why it matters:** Today "Why this fits" is a paragraph, either AI-written or stitched together from scoring reasons. Users can't quickly check whether a hike meets their needs, or check the AI's claims. This is the most direct way to improve recommendation transparency, and it pairs naturally with T06.
 - **Done when:**
-  - [ ] Turning on reduced motion stops scroll animation and pulsing.
-  - [ ] Selected controls show the brand color.
-  - [ ] Focus is clearly visible on every interactive element.
-  - [ ] All text meets WCAG AA contrast.
-- **Dependencies / open questions:** None.
+  - [ ] Each card lists every preference the user set, with its status.
+  - [ ] Status is shown with text and an icon, not color alone.
+  - [ ] It looks and works the same in AI and fallback modes.
+  - [ ] Screen readers read it as a list.
+- **Dependencies / open questions:**
+  - The scoring logic needs to return a result per preference instead of only a combined score and reason text. That's a small change in `lib/scoring.ts`, and tests (T09) help.
+  - Design decisions for you: checklist or chips? Should "not met" items always be shown? (I'd recommend yes, for honesty.)
+  - Overlaps with T06: T26 shows tradeoffs per hike, while T06 explains why no hike fully fits.
 
 ### T08 — Show total trip time on cards
 
@@ -246,6 +298,7 @@ Let users pick a starting area from a short list (for example, Seattle, Eastside
   - [ ] Tests cover at least two origins.
 - **Dependencies / open questions:**
   - Depends on T10, R2, and T09.
+  - *Decided (2026-11-17):* Start with preset areas so we can validate the feature sooner. This is a stepping stone: the long-term goal is letting users enter their own city (T15).
   - Which starting areas should be on the list?
   - *Unverified:* whether each routing provider's terms allow storing precomputed drive times (R2).
 
@@ -302,7 +355,7 @@ Match whole words instead of substrings, handle simple negation for dogs, and re
 
 Let users type a starting place. The server geocodes it, then calculates drive times from that point to each trailhead.
 
-- **Why it matters:** This is the full version of the starting-location goal.
+- **Why it matters:** This is the full version of the starting-location goal, and your stated long-term direction (decision 2026-11-17). T11 comes first to validate the idea cheaply.
 - **Done when:**
   - [ ] Users can enter a place and get results based on it.
   - [ ] Errors and ambiguous places are handled clearly.
@@ -323,7 +376,10 @@ Expand from 32 hikes to roughly 60–75, using the provenance format from T10. F
   - [ ] The agreed target count is reached.
   - [ ] Every new hike has coordinates, sources, and a `lastVerified` date.
   - [ ] Scoring tests still pass.
-- **Dependencies / open questions:** Depends on R1 and T10. What target size and regions?
+- **Dependencies / open questions:**
+  - Depends on R1 and T10.
+  - *Decided (2026-11-17):* Keep the curated dataset and use open data to supplement it. Revisit how far to expand once the usability study (T17) or feedback (T18) shows what users need.
+  - What target size and regions?
 
 ### T17 — Lightweight usability study
 
@@ -485,7 +541,7 @@ No source found so far offers ready-made hikes: a named destination with round-t
 
 #### Open questions
 
-1. Would WTA grant permission for limited use, such as linking plus a few facts per hike, or is there a partnership path? Worth an email; WTA is a nonprofit and this is a non-commercial student project.
+1. Would WTA grant permission for limited use, such as linking plus a few facts per hike, or is there a partnership path? Worth an email; WTA is a nonprofit and this is a non-commercial student project. *Deferred (2026-11-17): open to contacting WTA later, but not an immediate priority.*
 2. What attribution and redistribution terms apply to RCO's "Category 1 Public Information" data? Ask RCO or find a published data-use statement.
 3. What do the USFS dataset's metadata "use constraints" say, specifically for Mt. Baker-Snoqualmie National Forest data?
 4. How many Washington trailheads are actually in RIDB? This needs a free key to check.
@@ -506,12 +562,14 @@ No source found so far offers ready-made hikes: a named destination with round-t
    - OSM and USFS for geometry and trailheads.
    - RCO for land manager and permit hints.
    - The NPS API for park alerts.
-3. **Keep linking to WTA**, and email them about permission (open question 1). Don't scrape WTA or AllTrails.
+3. **Keep linking to WTA.** Emailing them about permission (open question 1) is deferred. Don't scrape WTA or AllTrails.
 4. **Revisit an automated pipeline (T24)** only if the usability study shows users want many more hikes than curation can provide.
+
+*Decided (2026-11-17):* Points 1, 2, and 4 are accepted. Expansion will be revisited once there's evidence about user needs.
 
 #### Possible next research steps (each Small)
 
-- R1a: Draft an email to WTA asking about permitted use.
+- R1a: Draft an email to WTA asking about permitted use. *(Deferred.)*
 - R1b: Check OSM coverage for the 32 current hikes.
 - R1c: Read the USFS and RCO use-constraint statements.
 - R1d: Get an RIDB key and count Washington trailheads.
@@ -579,9 +637,16 @@ Product and technical decisions, recorded as they're made.
 |---|---|---|
 | 2026-11-17 | Keep the backlog in `BACKLOG.md` at the repo root | Agreed in the first planning session |
 | 2026-11-17 | Don't scrape WTA or AllTrails without confirmed permission | Based on R1 findings |
+| 2026-11-17 | Deploy for testing before all accessibility fixes, but finish them before publicly promoting the app | T05 and T07 gate public release (M1). T07 moved from P1 to P0 to match. |
+| 2026-11-17 | Start with preset starting areas (T11); letting users enter their own city (T15) is the long-term goal | Preset areas validate the feature sooner and more cheaply |
+| 2026-11-17 | Keep the curated dataset and supplement it with open data; revisit expansion after evidence about user needs | Affects T16, T24, T25 |
+| 2026-11-17 | Contacting WTA about data use is deferred | Open to it later (R1 open question 1, R1a) |
+| 2026-11-17 | Host on Vercel with its default domain for now | Custom domain can come later (T04) |
+| 2026-11-17 | Keep this a UX-focused project, emphasizing recommendation transparency, personalization, and the hiking experience | See "Product focus"; T26 proposed in response |
 
 ## Done log
 
 | Date | What | Link |
 |---|---|---|
-| 2026-11-17 | Initial codebase review and backlog created | — |
+| 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
+| 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |

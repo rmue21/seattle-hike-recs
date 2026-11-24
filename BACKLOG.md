@@ -10,7 +10,9 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 This is all you need at the start of a session. The rest of the file is the long-term reference.
 
-**Ready for human review: T01** ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Before merging, test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Details are under T01.
+**Waiting on your checks: T01** (merged in [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Once those are confirmed, T01 is Done. Details are under T01.
+
+**Ready for human review: T27** label rename (Long day = 8 hours, All day = 12 hours).
 
 **Now: T02 — Make the AI route trust only server-side data** (step 1 of 2: the server side)
 
@@ -96,7 +98,8 @@ If your checks turn up a problem, the task goes back to In progress.
 
 ### Ready for human review
 
-- **T01 — Show trail notes and a "verify before you go" note on each card**: [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8), waiting on your checks and merge
+- **T01 — Show trail notes and a "verify before you go" note on each card**: merged in [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8); your checks not yet confirmed
+- **T27 — Make the total time options distinct**: first version merged in [PR #9](https://github.com/rmue21/seattle-hike-recs/pull/9); label rename waiting on your review and merge
 
 ### Now
 
@@ -136,7 +139,7 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 ### T01 — Show trail notes and a "verify before you go" note on each card
 
-**Effort:** Small · **Status:** Ready for human review ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)); waiting on your checks below and merge
+**Effort:** Small · **Status:** Merged in [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8); Done once your checks below are confirmed
 
 Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` never displays it. Add a "Good to know" section that shows the notes, plus a short line saying the stats are approximate, linking to the source.
 
@@ -383,7 +386,7 @@ Let users pick a starting area from a short list (for example, Seattle, Eastside
 
 ### T27 — Make the total time options distinct
 
-**Effort:** Small · **Status:** Ready for human review
+**Effort:** Small · **Status:** Ready for human review. The first version merged in [PR #9](https://github.com/rmue21/seattle-hike-recs/pull/9). A follow-up PR renames the labels so Long day means 8 hours and All day means 12.
 
 "Full day" (8 hours) and "All day" (12 hours) read as the same choice. The labels didn't say how long either one was, or that the time includes driving.
 

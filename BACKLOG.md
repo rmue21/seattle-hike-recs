@@ -1,6 +1,6 @@
 # Seattle Hike Finder — Backlog
 
-Last updated: 2026-11-17
+Last updated: 2026-11-24
 
 This is the working backlog for turning Seattle Hike Finder from a class prototype into a polished, public app for a UX engineering portfolio. Existing functionality stays working while it improves step by step.
 
@@ -10,18 +10,20 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 This is all you need at the start of a session. The rest of the file is the long-term reference.
 
-**Now: T01 — Show trail notes on each recommendation card**
+**Now: T02 — Make the AI route trust only server-side data** (step 1 of 2: the server side)
 
-**Why it matters:** Every hike has notes like "pets are not allowed" or "can hold snow into early summer," but the card never shows them. Hikers can miss information they need to plan safely.
+**Why it matters:** Once the app is on a public URL, anyone could call `/api/personalize` directly with any text and hike data, and spend your OpenAI credits. This is the first blocker before the test deploy.
 
-**First action:** Open `components/RecommendationCard.tsx` and find line 26, where `hike` comes from. Then jot down what a "Good to know" section should say for one hike (for example, Marymere Falls) and how prominent it should be.
+**First action:** Pick a length limit for the "Anything else?" notes field (somewhere around 300–500 characters). Then open `app/api/personalize/route.ts` and find where it reads `body.hikes`. That's the client-supplied data we'll stop trusting.
 
-**Done when:**
-- All three cards show the hike's notes, with or without AI.
-- Each card says the stats are approximate and points to the source link.
-- It reads well on a phone and with a screen reader.
+**Done when (step 1):**
+- The route accepts only preferences, checks them against the allowed values, and rejects notes over the limit.
+- The route picks candidate hikes itself from `data/hikes.ts`.
+- A hand-crafted bad request is rejected or safely ignored.
 
-**Up next:** T02 — Make the AI route trust only server-side data · T03 — Add cost and abuse guardrails
+**Step 2 (next session):** Update the form to send only preferences, and show a character counter on the notes field.
+
+**Up next:** T03 — Add cost and abuse guardrails · T04 — Deploy to a public URL
 
 ---
 
@@ -77,17 +79,16 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 ### Now
 
-- **T01 — Show trail notes and a "verify before you go" note on each card** (P0, Small)
+- **T02 — Make the AI route trust only server-side data** (P0, Medium; split into two steps)
 
 ### Next
 
-1. **T02 — Make the AI route trust only server-side data** (P0, Medium)
-2. **T03 — Add cost and abuse guardrails for the AI route** (P0, Small–Medium)
-3. **T04 — Deploy to a public URL** (P0, Small)
+1. **T03 — Add cost and abuse guardrails for the AI route** (P0, Small–Medium)
+2. **T04 — Deploy to a public URL** (P0, Small)
+3. **T05 — Keyboard and screen reader flow** (P0, Medium; can follow the test deploy)
 
 ### Later (in rough order)
 
-- T05 — Keyboard and screen reader flow (P0; must be done before public release)
 - T07 — Accessibility and motion polish (P0; must be done before public release)
 - T26 — Make it clear how each hike matches your preferences (P1, *proposed; explore UX approaches first*)
 - T09 — Unit tests for scoring and API validation (P1; supports T06)
@@ -114,20 +115,32 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 ### T01 — Show trail notes and a "verify before you go" note on each card
 
-**Effort:** Small · **Status:** Now
+**Effort:** Small · **Status:** Done (2026-11-24)
 
 Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` never displays it. Add a "Good to know" section that shows the notes, plus a short line saying the stats are approximate, linking to the source.
 
 - **Why it matters:** The notes hold planning and safety information, for example "pets are not allowed on park trails," "access crosses private land," "can hold snow into early summer," and "check tides." Right now users only see this if the AI happens to mention it, and in fallback mode they never do. A public hiking app shouldn't hide this.
 - **Done when:**
-  - [ ] All three cards show the hike's notes, in both AI and fallback modes.
-  - [ ] Each card makes clear that stats are approximate and points to the source link.
-  - [ ] The section reads naturally with a screen reader and looks right at mobile width.
-- **Dependencies / open questions:** Wording and visual weight are design decisions for you (for example, a subtle callout versus a plain paragraph).
+  - [x] All three cards show the hike's notes, in both AI and fallback modes.
+  - [x] Each card makes clear that stats are approximate and points to the source link.
+  - [x] The section reads naturally with a screen reader and looks right at mobile width.
+- **What we built:**
+  - A quiet "Good to know:" paragraph after the scenery tags and before "Why this fits."
+  - Below it, one line: "Stats are approximate. Check the latest trail details on wta.org before you go." The site name comes from each hike's source URL.
+  - The source link moved there from the card header, and it tells screen reader users it opens in a new tab.
+  - Skyline Loop's note was reworded for hikers.
+- **Tested:**
+  - In the browser in fallback mode (no API key) at desktop width and at 390px.
+  - The link is reachable by keyboard.
+  - AI mode wasn't run, but the card renders the same way in both modes because the notes come from the hike data.
+- **Follow-up idea:** Notes mix plain descriptions with cautions (no dogs, private land, snow). Highlighting cautions would mean splitting the field in the data; see T10.
 
 ### T02 — Make the AI route trust only server-side data
 
-**Effort:** Medium (about 2 sessions) · **Status:** Next
+**Effort:** Medium (about 2 sessions) · **Status:** Now
+
+- **Step 1:** Server side. The route accepts and validates only preferences, enforces the notes limit, and scores candidates itself.
+- **Step 2:** Client side. The form sends only preferences, and the notes field shows a character counter.
 
 Today the browser runs the scoring and sends six full hike objects to `/api/personalize`. The server then forwards whatever it receives to OpenAI. Instead, the client should send only the user's preferences, and the server should score hikes from its own dataset, validate the input, and return hike IDs plus explanations.
 
@@ -176,7 +189,7 @@ Deploy the app with the OpenAI key set as a server-side environment variable, an
 
 ### T05 — Keyboard and screen reader flow for submit, results, and start over
 
-**Effort:** Medium (about 2 sessions) · **Status:** Later (can follow the test deploy; required before public promotion)
+**Effort:** Medium (about 2 sessions) · **Status:** Next (can follow the test deploy; required before public promotion)
 
 Fix the focus and announcement problems in the main flow:
 
@@ -300,7 +313,9 @@ Add trailhead latitude/longitude, a `lastVerified` date, and a note on where eac
   - [ ] All hikes have trailhead coordinates and a `lastVerified` date.
   - [ ] Each record names its sources.
   - [ ] The dataset's TypeScript types are updated.
-- **Dependencies / open questions:** Use only sources R1 identifies as usable (for example, OpenStreetMap with attribution, or federal datasets).
+- **Dependencies / open questions:**
+  - Use only sources R1 identifies as usable (for example, OpenStreetMap with attribution, or federal datasets).
+  - Consider splitting `notes` into a description and a list of cautions, so the card can highlight cautions without styling every note as a warning (from T01).
 
 ### T11 — Starting location, step 1: preset starting areas
 
@@ -663,6 +678,8 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Keep this a UX-focused project, emphasizing recommendation transparency, personalization, and the hiking experience | See "Product focus"; T26 proposed in response |
 | 2026-11-17 | T26 stays proposed; explore several UX approaches before committing to a full checklist on every card | T26 reframed as a design exploration |
 | 2026-11-17 | Session check-ins show only the current task, why it matters, and the next action, unless the larger plan is requested | The "Start here" section holds that view. A separate `START_HERE.md` was tried and dropped; everything lives in this one file. |
+| 2026-11-24 | T01 design: notes go before "Why this fits," use a quiet neutral style (not warning colors), and the source link moves from the header into one "stats are approximate" line that names the site | Notes mix descriptions and cautions, so warning styling would mislabel many of them |
+| 2026-11-24 | Reword Skyline Loop's note for hikers instead of the developer-facing "this prototype treats it as hard" | Keeps the honesty about varying difficulty ratings |
 
 ## Done log
 
@@ -671,3 +688,4 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
 | 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
 | 2026-11-17 | Planning session 3: "Start here" section rewritten in the short check-in format, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
+| 2026-11-24 | T01: trail notes and a "verify before you go" source line on each card | T01 pull request (branch `cursor/t01-trail-notes-19e6`) |

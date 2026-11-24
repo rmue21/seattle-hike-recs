@@ -466,7 +466,7 @@ export const hikes: Hike[] = [
     permit: "National Park Pass",
     sceneryTags: ["mountain-views", "wildflowers", "alpine", "waterfall"],
     crowdLevel: "high",
-    notes: "Popular Paradise loop with major Mount Rainier views. Difficulty ratings vary by source, so this prototype treats it as hard to avoid underselling the effort.",
+    notes: "Popular Paradise loop with major Mount Rainier views. Difficulty ratings vary by source; we rate it hard to avoid underselling the effort.",
     sourceUrl: "https://www.nps.gov/mora/planyourvisit/skyline-trail.htm",
   },
   {

@@ -10,8 +10,6 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 This is all you need at the start of a session. The rest of the file is the long-term reference.
 
-**Waiting on your checks: T01** (merged in [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Once those are confirmed, T01 is Done. Details are under T01.
-
 **Ready for human review: T27** label rename (Long day = 8 hours, All day = 12 hours).
 
 **Now: T02 — Make the AI route trust only server-side data** (step 1 of 2: the server side)
@@ -98,7 +96,6 @@ If your checks turn up a problem, the task goes back to In progress.
 
 ### Ready for human review
 
-- **T01 — Show trail notes and a "verify before you go" note on each card**: merged in [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8); your checks not yet confirmed
 - **T27 — Make the total time options distinct**: first version merged in [PR #9](https://github.com/rmue21/seattle-hike-recs/pull/9); label rename waiting on your review and merge
 
 ### Now
@@ -139,21 +136,21 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 ### T01 — Show trail notes and a "verify before you go" note on each card
 
-**Effort:** Small · **Status:** Merged in [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8); Done once your checks below are confirmed
+**Effort:** Small · **Status:** Done ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8))
 
 Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` never displays it. Add a "Good to know" section that shows the notes, plus a short line saying the stats are approximate, linking to the source.
 
 - **Why it matters:** The notes hold planning and safety information, for example "pets are not allowed on park trails," "access crosses private land," "can hold snow into early summer," and "check tides." Right now users only see this if the AI happens to mention it, and in fallback mode they never do. A public hiking app shouldn't hide this.
 - **Done when:**
   - [x] All three cards show the hike's notes in fallback mode.
-  - [ ] All three cards show the hike's notes in AI mode. *(Your check: needs an OpenAI key.)*
+  - [x] All three cards show the hike's notes in AI mode. *(You tested this locally with your key.)*
   - [x] Each card makes clear that stats are approximate and points to the source link.
   - [x] It looks right at mobile width (checked at 390px).
-  - [ ] The section reads naturally with a screen reader. *(Your check: only keyboard focus has been tested so far.)*
-- **Your checks before merging:**
-  - [ ] Run the branch locally with your key and confirm the cards look right next to a real AI explanation.
-  - [ ] Check whether the AI's "Why this fits" now repeats what "Good to know" says. The prompt already sends the notes to the model. If it does repeat, decide whether to adjust the prompt now or log it as a follow-up.
-  - [ ] Do a quick VoiceOver or NVDA pass over one card.
+  - Moved to T05: the section reads naturally with a screen reader. Only keyboard focus was tested here.
+- **Your checks:**
+  - [x] Ran it locally with your key; the cards look right next to a real AI explanation.
+  - [x] Checked whether the AI's "Why this fits" repeats "Good to know": it sometimes does, and that's acceptable for now (see the Decisions log).
+  - Screen reader pass moved to T05.
 - **What we built:**
   - A quiet "Good to know:" paragraph after the scenery tags and before "Why this fits."
   - Below it, one line: "Stats are approximate. Check the latest trail details on wta.org before you go." The site name comes from each hike's source URL.
@@ -166,7 +163,7 @@ Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` neve
   - Cards linking to wta.org, nps.gov (Skyline Loop), and seattle.gov (Seward Park Loop) show the right site name and link.
   - Skyline Loop's reworded note appears correctly on screen.
   - A missing or malformed source URL makes the site-name helper return nothing, so the card shows "Check current conditions before you go." This was checked by running the same URL logic outside the app; no current hike has a missing URL.
-- **Not tested by the AI (your checks below):** AI mode and a real screen reader.
+- **Not tested by the AI:** AI mode (you tested it) and a real screen reader (moved to T05).
 - **Follow-up idea:** Notes mix plain descriptions with cautions (no dogs, private land, snow). Highlighting cautions would mean splitting the field in the data; see T10.
 
 ### T02 — Make the AI route trust only server-side data
@@ -241,6 +238,7 @@ Fix the focus and announcement problems in the main flow:
   - [ ] The textarea has an accessible label.
   - [ ] A full keyboard-only walkthrough works, as does a screen reader walkthrough (VoiceOver or NVDA).
   - [ ] An automated check (for example, axe DevTools) reports no serious or critical issues.
+  - [ ] The card's "Good to know" notes and source link read naturally with a screen reader (moved here from T01).
 - **Dependencies / open questions:** None.
 
 ### T07 — Accessibility and motion polish
@@ -730,6 +728,9 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-24 | T01 design: notes go before "Why this fits," use a quiet neutral style (not warning colors), and the source link moves from the header into one "stats are approximate" line that names the site | Notes mix descriptions and cautions, so warning styling would mislabel many of them |
 | 2026-11-24 | Tasks move through In progress, AI review, Ready for human review, and Done. Done means your checks are complete and the PR is merged. | Prompted by T01 being marked done before AI mode and screen reader testing; see "Task status" |
 | 2026-11-24 | Reword Skyline Loop's note for hikers instead of the developer-facing "this prototype treats it as hard" | Keeps the honesty about varying difficulty ratings |
+| 2026-11-24 | The AI's "Why this fits" sometimes repeats the "Good to know" notes; acceptable for now | Found in your AI-mode test of T01. Revisit if it bothers testers, for example by telling the prompt that notes are already shown. |
+| 2026-11-24 | T01's screen reader check moves to T05 | T05 already includes a full screen reader walkthrough |
+| 2026-11-24 | Total time options keep four choices, with hours in each label: Long day = up to 8 hours, All day = up to 12 | Seven hikes need 8 to 12 hours, so merging would hide them or overshoot; see T27 |
 
 ## Done log
 
@@ -738,3 +739,4 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
 | 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
 | 2026-11-17 | Planning session 3: "Start here" section rewritten in the short check-in format, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
+| 2026-11-24 | T01 Done: cards show trail notes and a "verify before you go" line with the source link; task status workflow added | [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8) |

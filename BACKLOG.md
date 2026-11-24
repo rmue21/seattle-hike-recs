@@ -688,4 +688,4 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
 | 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
 | 2026-11-17 | Planning session 3: "Start here" section rewritten in the short check-in format, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
-| 2026-11-24 | T01: trail notes and a "verify before you go" source line on each card | T01 pull request (branch `cursor/t01-trail-notes-19e6`) |
+| 2026-11-24 | T01: trail notes and a "verify before you go" source line on each card | [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8) |

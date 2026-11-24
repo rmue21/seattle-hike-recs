@@ -10,6 +10,8 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 This is all you need at the start of a session. The rest of the file is the long-term reference.
 
+**In review: T01** ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Before merging, test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Details are under T01.
+
 **Now: T02 — Make the AI route trust only server-side data** (step 1 of 2: the server side)
 
 **Why it matters:** Once the app is on a public URL, anyone could call `/api/personalize` directly with any text and hike data, and spend your OpenAI credits. This is the first blocker before the test deploy.
@@ -77,6 +79,10 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 ## Work queue
 
+### In review
+
+- **T01 — Show trail notes and a "verify before you go" note on each card**: [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8), waiting on your checks and merge
+
 ### Now
 
 - **T02 — Make the AI route trust only server-side data** (P0, Medium; split into two steps)
@@ -115,24 +121,36 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 ### T01 — Show trail notes and a "verify before you go" note on each card
 
-**Effort:** Small · **Status:** Done (2026-11-24)
+**Effort:** Small · **Status:** In review ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)); waiting on your checks below and merge
 
 Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` never displays it. Add a "Good to know" section that shows the notes, plus a short line saying the stats are approximate, linking to the source.
 
 - **Why it matters:** The notes hold planning and safety information, for example "pets are not allowed on park trails," "access crosses private land," "can hold snow into early summer," and "check tides." Right now users only see this if the AI happens to mention it, and in fallback mode they never do. A public hiking app shouldn't hide this.
 - **Done when:**
-  - [x] All three cards show the hike's notes, in both AI and fallback modes.
+  - [x] All three cards show the hike's notes in fallback mode.
+  - [ ] All three cards show the hike's notes in AI mode. *(Your check: needs an OpenAI key.)*
   - [x] Each card makes clear that stats are approximate and points to the source link.
-  - [x] The section reads naturally with a screen reader and looks right at mobile width.
+  - [x] It looks right at mobile width (checked at 390px).
+  - [ ] The section reads naturally with a screen reader. *(Your check: only keyboard focus has been tested so far.)*
+- **Your checks before merging:**
+  - [ ] Run the branch locally with your key and confirm the cards look right next to a real AI explanation.
+  - [ ] Check whether the AI's "Why this fits" now repeats what "Good to know" says. The prompt already sends the notes to the model. If it does repeat, decide whether to adjust the prompt now or log it as a follow-up.
+  - [ ] Do a quick VoiceOver or NVDA pass over one card.
 - **What we built:**
   - A quiet "Good to know:" paragraph after the scenery tags and before "Why this fits."
   - Below it, one line: "Stats are approximate. Check the latest trail details on wta.org before you go." The site name comes from each hike's source URL.
   - The source link moved there from the card header, and it tells screen reader users it opens in a new tab.
   - Skyline Loop's note was reworded for hikers.
-- **Tested:**
+- **Tested so far:**
+  - Lint, type-check, and build pass.
   - In the browser in fallback mode (no API key) at desktop width and at 390px.
-  - The link is reachable by keyboard.
-  - AI mode wasn't run, but the card renders the same way in both modes because the notes come from the hike data.
+  - The link is reachable by keyboard with a visible focus ring.
+- **Not yet tested:**
+  - AI mode.
+  - A real screen reader.
+  - Cards whose source is nps.gov or seattle.gov (every tested result linked to wta.org).
+  - The Skyline Loop wording on screen.
+  - The fallback text for a missing source URL (no current hike triggers it).
 - **Follow-up idea:** Notes mix plain descriptions with cautions (no dogs, private land, snow). Highlighting cautions would mean splitting the field in the data; see T10.
 
 ### T02 — Make the AI route trust only server-side data
@@ -688,4 +706,3 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
 | 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
 | 2026-11-17 | Planning session 3: "Start here" section rewritten in the short check-in format, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
-| 2026-11-24 | T01: trail notes and a "verify before you go" source line on each card | [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8) |

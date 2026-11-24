@@ -10,7 +10,7 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 This is all you need at the start of a session. The rest of the file is the long-term reference.
 
-**In review: T01** ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Before merging, test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Details are under T01.
+**Ready for human review: T01** ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Before merging, test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Details are under T01.
 
 **Now: T02 — Make the AI route trust only server-side data** (step 1 of 2: the server side)
 
@@ -66,8 +66,23 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 - Exactly **one** task in Now, and **up to three** in Next.
 - When a task moves into Now and is bigger than Small, we split it into session-sized steps first.
-- At the end of each session: update the task's status, add a line to the Done log, record any decisions, pick the next task, and rewrite the "Start here" section for it.
+- At the end of each session: update the task's status, record any decisions, pick the next task, and rewrite the "Start here" section for it. Add a Done log entry only when a task reaches **Done**.
 - **Session check-ins:** Start each session by showing only the current task, why it matters, and the next concrete action, as in "Start here." Show the larger plan only when asked.
+
+**Task status**
+
+Each task moves through these stages in order. A task doesn't skip a stage.
+
+1. **In progress:** Being built.
+2. **AI review:** The AI checks its own work before handing it over:
+   - Lint, type-check, and build pass.
+   - Every "done when" item the AI can test has been tested in every mode it covers (for example, AI and fallback, desktop and mobile, each data source).
+   - The diff has been reread for mistakes.
+   - Anything the AI can't test (for example, AI mode without a key, or a real screen reader) is listed for you instead of being checked off.
+3. **Ready for human review:** The PR is open and describes what changed, what was tested, what wasn't, a checklist of your checks, and how to try it locally. Only items that were actually verified are checked off.
+4. **Done:** You've completed your checks and merged the PR. Only then does the task get a Done log entry.
+
+If your checks turn up a problem, the task goes back to In progress.
 
 **Status labels for research findings**
 
@@ -79,7 +94,7 @@ This is a UX-focused project. Technical work earns its place by protecting users
 
 ## Work queue
 
-### In review
+### Ready for human review
 
 - **T01 — Show trail notes and a "verify before you go" note on each card**: [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8), waiting on your checks and merge
 
@@ -121,7 +136,7 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 ### T01 — Show trail notes and a "verify before you go" note on each card
 
-**Effort:** Small · **Status:** In review ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)); waiting on your checks below and merge
+**Effort:** Small · **Status:** Ready for human review ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)); waiting on your checks below and merge
 
 Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` never displays it. Add a "Good to know" section that shows the notes, plus a short line saying the stats are approximate, linking to the source.
 
@@ -141,16 +156,14 @@ Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` neve
   - Below it, one line: "Stats are approximate. Check the latest trail details on wta.org before you go." The site name comes from each hike's source URL.
   - The source link moved there from the card header, and it tells screen reader users it opens in a new tab.
   - Skyline Loop's note was reworded for hikers.
-- **Tested so far:**
+- **AI review (tested by the AI):**
   - Lint, type-check, and build pass.
   - In the browser in fallback mode (no API key) at desktop width and at 390px.
   - The link is reachable by keyboard with a visible focus ring.
-- **Not yet tested:**
-  - AI mode.
-  - A real screen reader.
-  - Cards whose source is nps.gov or seattle.gov (every tested result linked to wta.org).
-  - The Skyline Loop wording on screen.
-  - The fallback text for a missing source URL (no current hike triggers it).
+  - Cards linking to wta.org, nps.gov (Skyline Loop), and seattle.gov (Seward Park Loop) show the right site name and link.
+  - Skyline Loop's reworded note appears correctly on screen.
+  - A missing or malformed source URL makes the site-name helper return nothing, so the card shows "Check current conditions before you go." This was checked by running the same URL logic outside the app; no current hike has a missing URL.
+- **Not tested by the AI (your checks below):** AI mode and a real screen reader.
 - **Follow-up idea:** Notes mix plain descriptions with cautions (no dogs, private land, snow). Highlighting cautions would mean splitting the field in the data; see T10.
 
 ### T02 — Make the AI route trust only server-side data
@@ -697,6 +710,7 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | T26 stays proposed; explore several UX approaches before committing to a full checklist on every card | T26 reframed as a design exploration |
 | 2026-11-17 | Session check-ins show only the current task, why it matters, and the next action, unless the larger plan is requested | The "Start here" section holds that view. A separate `START_HERE.md` was tried and dropped; everything lives in this one file. |
 | 2026-11-24 | T01 design: notes go before "Why this fits," use a quiet neutral style (not warning colors), and the source link moves from the header into one "stats are approximate" line that names the site | Notes mix descriptions and cautions, so warning styling would mislabel many of them |
+| 2026-11-24 | Tasks move through In progress, AI review, Ready for human review, and Done. Done means your checks are complete and the PR is merged. | Prompted by T01 being marked done before AI mode and screen reader testing; see "Task status" |
 | 2026-11-24 | Reword Skyline Loop's note for hikers instead of the developer-facing "this prototype treats it as hard" | Keeps the honesty about varying difficulty ratings |
 
 ## Done log

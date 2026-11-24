@@ -18,6 +18,14 @@ function difficultyStyles(difficulty: Difficulty): string {
   }
 }
 
+function sourceSiteName(url: string): string | null {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
 export function RecommendationCard({
   rank,
   result,
@@ -25,6 +33,7 @@ export function RecommendationCard({
 }: RecommendationCardProps) {
   const { hike, whyThisFits } = result;
   const explanation = personalizedExplanation ?? whyThisFits;
+  const sourceSite = sourceSiteName(hike.sourceUrl);
 
   return (
     <article className="overflow-hidden rounded-2xl border border-emerald-200/80 bg-white shadow-sm ring-1 ring-slate-900/5">
@@ -38,16 +47,6 @@ export function RecommendationCard({
               {hike.name}
             </h3>
             <p className="mt-0.5 text-sm text-slate-600">{hike.location}</p>
-            {hike.sourceUrl && (
-              <a
-                href={hike.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1.5 inline-block text-xs font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800 hover:decoration-emerald-500"
-              >
-                Check latest trail details
-              </a>
-            )}
           </div>
         </div>
       </div>
@@ -106,6 +105,32 @@ export function RecommendationCard({
               {tag}
             </span>
           ))}
+        </div>
+
+        <div className="mt-4 text-sm leading-relaxed text-slate-600">
+          <p>
+            <span className="font-semibold text-slate-800">Good to know: </span>
+            {hike.notes}
+          </p>
+          <p className="mt-1.5 text-xs text-slate-500">
+            Stats are approximate.{" "}
+            {sourceSite ? (
+              <>
+                <a
+                  href={hike.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800 hover:decoration-emerald-500"
+                >
+                  Check the latest trail details on {sourceSite}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>{" "}
+                before you go.
+              </>
+            ) : (
+              "Check current conditions before you go."
+            )}
+          </p>
         </div>
 
         <p className="mt-4 rounded-xl border border-emerald-100 bg-emerald-50/50 px-4 py-3 text-sm leading-relaxed text-emerald-950">

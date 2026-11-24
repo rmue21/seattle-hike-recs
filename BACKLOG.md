@@ -10,7 +10,7 @@ This is the working backlog for turning Seattle Hike Finder from a class prototy
 
 This is all you need at the start of a session. The rest of the file is the long-term reference.
 
-**Ready for human review: T01** ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)). Before merging, test it locally with your OpenAI key, check whether the AI text repeats the notes, and do a quick screen reader pass. Details are under T01.
+**Ready for human review: T27** label rename (Long day = 8 hours, All day = 12 hours).
 
 **Now: T02 — Make the AI route trust only server-side data** (step 1 of 2: the server side)
 
@@ -24,6 +24,8 @@ This is all you need at the start of a session. The rest of the file is the long
 - A hand-crafted bad request is rejected or safely ignored.
 
 **Step 2 (next session):** Update the form to send only preferences, and show a character counter on the notes field.
+
+**Step 3:** Tidy the AI prompt so "Why this fits" stops repeating what the card already shows.
 
 **Up next:** T03 — Add cost and abuse guardrails · T04 — Deploy to a public URL
 
@@ -96,11 +98,11 @@ If your checks turn up a problem, the task goes back to In progress.
 
 ### Ready for human review
 
-- **T01 — Show trail notes and a "verify before you go" note on each card**: [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8), waiting on your checks and merge
+- **T27 — Make the total time options distinct**: first version merged in [PR #9](https://github.com/rmue21/seattle-hike-recs/pull/9); label rename waiting on your review and merge
 
 ### Now
 
-- **T02 — Make the AI route trust only server-side data** (P0, Medium; split into two steps)
+- **T02 — Make the AI route trust only server-side data** (P0, Medium; split into three steps)
 
 ### Next
 
@@ -112,6 +114,7 @@ If your checks turn up a problem, the task goes back to In progress.
 
 - T07 — Accessibility and motion polish (P0; must be done before public release)
 - T26 — Make it clear how each hike matches your preferences (P1, *proposed; explore UX approaches first*)
+- T28 — Don't recommend out-of-season or winter-risk hikes without warning (P1, *proposed; explore UX approaches first*)
 - T09 — Unit tests for scoring and API validation (P1; supports T06)
 - T06 — Explain when preferences can't all be met (P1)
 - T08 — Show total trip time on cards (P1)
@@ -136,21 +139,21 @@ These are rough groupings to keep the big picture visible, not deadlines.
 
 ### T01 — Show trail notes and a "verify before you go" note on each card
 
-**Effort:** Small · **Status:** Ready for human review ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8)); waiting on your checks below and merge
+**Effort:** Small · **Status:** Done ([PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8))
 
 Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` never displays it. Add a "Good to know" section that shows the notes, plus a short line saying the stats are approximate, linking to the source.
 
 - **Why it matters:** The notes hold planning and safety information, for example "pets are not allowed on park trails," "access crosses private land," "can hold snow into early summer," and "check tides." Right now users only see this if the AI happens to mention it, and in fallback mode they never do. A public hiking app shouldn't hide this.
 - **Done when:**
   - [x] All three cards show the hike's notes in fallback mode.
-  - [ ] All three cards show the hike's notes in AI mode. *(Your check: needs an OpenAI key.)*
+  - [x] All three cards show the hike's notes in AI mode. *(You tested this locally with your key.)*
   - [x] Each card makes clear that stats are approximate and points to the source link.
   - [x] It looks right at mobile width (checked at 390px).
-  - [ ] The section reads naturally with a screen reader. *(Your check: only keyboard focus has been tested so far.)*
-- **Your checks before merging:**
-  - [ ] Run the branch locally with your key and confirm the cards look right next to a real AI explanation.
-  - [ ] Check whether the AI's "Why this fits" now repeats what "Good to know" says. The prompt already sends the notes to the model. If it does repeat, decide whether to adjust the prompt now or log it as a follow-up.
-  - [ ] Do a quick VoiceOver or NVDA pass over one card.
+  - Moved to T05: the section reads naturally with a screen reader. Only keyboard focus was tested here.
+- **Your checks:**
+  - [x] Ran it locally with your key; the cards look right next to a real AI explanation.
+  - [x] Checked whether the AI's "Why this fits" repeats "Good to know": it sometimes does, and that's acceptable for now (see the Decisions log).
+  - Screen reader pass moved to T05.
 - **What we built:**
   - A quiet "Good to know:" paragraph after the scenery tags and before "Why this fits."
   - Below it, one line: "Stats are approximate. Check the latest trail details on wta.org before you go." The site name comes from each hike's source URL.
@@ -163,15 +166,16 @@ Every hike in `data/hikes.ts` has a `notes` field, but `RecommendationCard` neve
   - Cards linking to wta.org, nps.gov (Skyline Loop), and seattle.gov (Seward Park Loop) show the right site name and link.
   - Skyline Loop's reworded note appears correctly on screen.
   - A missing or malformed source URL makes the site-name helper return nothing, so the card shows "Check current conditions before you go." This was checked by running the same URL logic outside the app; no current hike has a missing URL.
-- **Not tested by the AI (your checks below):** AI mode and a real screen reader.
+- **Not tested by the AI:** AI mode (you tested it) and a real screen reader (moved to T05).
 - **Follow-up idea:** Notes mix plain descriptions with cautions (no dogs, private land, snow). Highlighting cautions would mean splitting the field in the data; see T10.
 
 ### T02 — Make the AI route trust only server-side data
 
-**Effort:** Medium (about 2 sessions) · **Status:** Now
+**Effort:** Medium (about 3 sessions) · **Status:** Now
 
 - **Step 1:** Server side. The route accepts and validates only preferences, enforces the notes limit, and scores candidates itself.
 - **Step 2:** Client side. The form sends only preferences, and the notes field shows a character counter.
+- **Step 3:** AI prompt cleanup. Tell the AI what the card already shows (stats, tags, "Good to know" notes) so it doesn't repeat them, and have it focus on how the hike matches the user's preferences and any tradeoffs. Send the AI the time label or hour limit the user saw ("Long day, up to 8 hours") instead of the internal value (`full-day`).
 
 Today the browser runs the scoring and sends six full hike objects to `/api/personalize`. The server then forwards whatever it receives to OpenAI. Instead, the client should send only the user's preferences, and the server should score hikes from its own dataset, validate the input, and return hike IDs plus explanations.
 
@@ -182,7 +186,10 @@ Today the browser runs the scoring and sends six full hike objects to `/api/pers
   - [ ] `additionalNotes` has a maximum length, enforced on the server and shown in the UI (for example, a character counter).
   - [ ] The local fallback still works with no API key.
   - [ ] A manual test with a crafted request (wrong values, huge notes, injected hike data) is rejected or safely ignored.
+  - [ ] In AI mode, "Why this fits" no longer restates the distance, elevation, or notes shown on the card. *(Your check: needs your OpenAI key. Compare a few results, including Granite Mountain.)*
+  - [ ] The AI refers to the user's time choice by the label they picked.
 - **Dependencies / open questions:** What notes length limit feels right? (A starting point: 300–500 characters.)
+- **Example that prompted step 3 (2026-11-24):** Granite Mountain's explanation opened with "a challenging 8.6-mile hike with 3800 ft elevation gain" (already in the stats box), mentioned the fire lookout (already in the tags and notes), and called the time "your all-day availability" (the internal value name).
 
 ### T03 — Add cost and abuse guardrails for the AI route
 
@@ -238,6 +245,7 @@ Fix the focus and announcement problems in the main flow:
   - [ ] The textarea has an accessible label.
   - [ ] A full keyboard-only walkthrough works, as does a screen reader walkthrough (VoiceOver or NVDA).
   - [ ] An automated check (for example, axe DevTools) reports no serious or critical issues.
+  - [ ] The card's "Good to know" notes and source link read naturally with a screen reader (moved here from T01).
 - **Dependencies / open questions:** None.
 
 ### T07 — Accessibility and motion polish
@@ -383,18 +391,41 @@ Let users pick a starting area from a short list (for example, Seattle, Eastside
 
 ### T27 — Make the total time options distinct
 
-**Effort:** Small · **Status:** Ready for human review
+**Effort:** Small · **Status:** Ready for human review. The first version merged in [PR #9](https://github.com/rmue21/seattle-hike-recs/pull/9). A follow-up PR renames the labels so Long day means 8 hours and All day means 12.
 
 "Full day" (8 hours) and "All day" (12 hours) read as the same choice. The labels didn't say how long either one was, or that the time includes driving.
 
 - **Decision (2026-11-24):** Keep four options rather than merging. Seven of the 32 hikes need 8 to 12 hours including the drive. Merging at 8 hours would hide them, and merging at 12 would show 10-hour trips to people who wanted 8.
-- **Change:** The labels are now "Up to 3 hours," "Half day (up to 5 hours)," "Full day (up to 8 hours)," and "Long day (up to 12 hours)." A hint under the question says "Includes driving there and back," and screen readers read it with the question. The values used by scoring and the AI are unchanged.
+- **Change:** The labels are now "Up to 3 hours," "Half day (up to 5 hours)," "Long day (up to 8 hours)," and "All day (up to 12 hours)." "Long day" was chosen for 8 hours because it reads as shorter than "All day." A hint under the question says "Includes driving there and back," and screen readers read it with the question. The values used by scoring and the AI are unchanged.
 - **Done when:**
   - [x] No two options read as the same length of time.
   - [x] Each label shows its upper limit in hours.
   - [x] The form says that the time includes driving.
   - [x] Scoring results are unchanged for every option.
   - [ ] You're happy with the wording (your check).
+
+### T28 — Don't recommend out-of-season or winter-risk hikes without warning
+
+**Effort:** Research first (design exploration), then implementation sized once a direction is chosen · **Status:** Later · ***Proposed; explore approaches before committing to a design***
+
+The app doesn't know what time of year it is. On 2026-11-24 it ranked Granite Mountain first, even though the hike's own note says "avalanche-prone winter terrain." The note appeared in "Good to know," but nothing in the ranking or the explanation reflected the season.
+
+- **Why it matters:** This is a hiking-safety and trust problem, not just polish. A user who follows a top pick into avalanche terrain, or drives to a road that's closed for the season, loses trust in every other recommendation. It fits the "hiking experience" focus.
+- **What we have today:** Seven of the 32 hikes mention snow, winter access, or seasonal roads in their `notes`: Franklin Falls, Gold Creek Pond, Lake 22, Mount Pilchuck, Snow Lake, Granite Mountain, and Tolmie Peak Lookout. It's free text, so scoring can't use it. Other high-elevation hikes, such as Mount Fremont Lookout (Sunrise), Skyline Loop (Paradise), Hurricane Hill, and Naches Peak Loop, have no seasonal note at all. *Unverified:* whether their access roads close in winter. The AI prompt says not to invent snow conditions or safety issues, so the AI doesn't connect the note to the date either.
+- **Approaches to explore** (starting points, not a final list):
+  1. **Seasonal flag on the card:** keep the ranking but show a clear "Winter caution" on affected hikes during set months.
+  2. **Rank lower in season:** reduce the score of winter-risk hikes during set months, and say so on the card.
+  3. **Hide in season:** leave them out during set months, with a note that some hikes are hidden.
+  4. **Ask the user:** a "When are you going?" question, defaulting to today.
+- **Criteria for comparing them:** honesty about risk, not hiding good options unnecessarily, works with and without AI, and doesn't claim to know current conditions (that's T21).
+- **Done when (exploration):**
+  - [ ] Each affected hike's risky months or seasonal access are written down, with a source.
+  - [ ] 2–3 approaches are sketched and compared against the criteria.
+  - [ ] You pick a direction, and an implementation task is written with its own definition of done.
+- **Dependencies / open questions:**
+  - Needs a structured seasonal field in the data. This could fit T10, which already adds data provenance.
+  - Month-based rules are a stand-in for real conditions. T21 (live conditions) is the long-term answer, and R3 covers sources such as avalanche forecasts (currently unverified).
+  - Should this block public release (P0)? It's at P1 for now, by your decision.
 
 ---
 
@@ -727,6 +758,10 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-24 | T01 design: notes go before "Why this fits," use a quiet neutral style (not warning colors), and the source link moves from the header into one "stats are approximate" line that names the site | Notes mix descriptions and cautions, so warning styling would mislabel many of them |
 | 2026-11-24 | Tasks move through In progress, AI review, Ready for human review, and Done. Done means your checks are complete and the PR is merged. | Prompted by T01 being marked done before AI mode and screen reader testing; see "Task status" |
 | 2026-11-24 | Reword Skyline Loop's note for hikers instead of the developer-facing "this prototype treats it as hard" | Keeps the honesty about varying difficulty ratings |
+| 2026-11-24 | The AI's "Why this fits" repeats the stats and notes already on the card; fix it as step 3 of T02 | Found in your AI-mode test of T01 (Granite Mountain example). T02 already edits the same route. |
+| 2026-11-24 | Seasonal safety becomes its own proposed P1 task (T28); explore the design before building | The app recommended avalanche-prone Granite Mountain first in late November |
+| 2026-11-24 | T01's screen reader check moves to T05 | T05 already includes a full screen reader walkthrough |
+| 2026-11-24 | Total time options keep four choices, with hours in each label: Long day = up to 8 hours, All day = up to 12 | Seven hikes need 8 to 12 hours, so merging would hide them or overshoot; see T27 |
 
 ## Done log
 
@@ -735,3 +770,4 @@ Product and technical decisions, recorded as they're made.
 | 2026-11-17 | Initial codebase review and backlog created | [PR #6](https://github.com/rmue21/seattle-hike-recs/pull/6) |
 | 2026-11-17 | Planning session 2: decisions recorded, Start here and Product focus sections added, T07 moved to P0, T26 proposed | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
 | 2026-11-17 | Planning session 3: "Start here" section rewritten in the short check-in format, T26 reframed as a UX exploration | [PR #7](https://github.com/rmue21/seattle-hike-recs/pull/7) |
+| 2026-11-24 | T01 Done: cards show trail notes and a "verify before you go" line with the source link; task status workflow added | [PR #8](https://github.com/rmue21/seattle-hike-recs/pull/8) |

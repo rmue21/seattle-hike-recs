@@ -20,8 +20,8 @@ const FINAL_COUNT = 3;
 const TOTAL_TIME_OPTIONS: { value: TotalTimeOption; label: string }[] = [
   { value: "2-3-hours", label: "Up to 3 hours" },
   { value: "half-day", label: "Half day (up to 5 hours)" },
-  { value: "full-day", label: "Full day (up to 8 hours)" },
-  { value: "all-day", label: "Long day (up to 12 hours)" },
+  { value: "full-day", label: "Long day (up to 8 hours)" },
+  { value: "all-day", label: "All day (up to 12 hours)" },
 ];
 
 const DRIVE_OPTIONS: { value: DriveTimeOption; label: string }[] = [

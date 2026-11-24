@@ -335,6 +335,21 @@ Let users pick a starting area from a short list (for example, Seattle, Eastside
   - [ ] The README includes the live link and screenshots.
 - **Dependencies / open questions:** Depends on T04. Do you want a separate long-form case study, or is the README enough?
 
+### T27 — Make the total time options distinct
+
+**Effort:** Small · **Status:** Ready for human review
+
+"Full day" (8 hours) and "All day" (12 hours) read as the same choice. The labels didn't say how long either one was, or that the time includes driving.
+
+- **Decision (2026-11-24):** Keep four options rather than merging. Seven of the 32 hikes need 8 to 12 hours including the drive. Merging at 8 hours would hide them, and merging at 12 would show 10-hour trips to people who wanted 8.
+- **Change:** The labels are now "Up to 3 hours," "Half day (up to 5 hours)," "Full day (up to 8 hours)," and "Long day (up to 12 hours)." A hint under the question says "Includes driving there and back," and screen readers read it with the question. The values used by scoring and the AI are unchanged.
+- **Done when:**
+  - [x] No two options read as the same length of time.
+  - [x] Each label shows its upper limit in hours.
+  - [x] The form says that the time includes driving.
+  - [x] Scoring results are unchanged for every option.
+  - [ ] You're happy with the wording (your check).
+
 ---
 
 ## P2 — Medium

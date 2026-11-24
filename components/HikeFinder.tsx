@@ -18,10 +18,10 @@ const CANDIDATE_COUNT = 6;
 const FINAL_COUNT = 3;
 
 const TOTAL_TIME_OPTIONS: { value: TotalTimeOption; label: string }[] = [
-  { value: "2-3-hours", label: "2 to 3 hours" },
-  { value: "half-day", label: "Half day" },
-  { value: "full-day", label: "Full day" },
-  { value: "all-day", label: "All day" },
+  { value: "2-3-hours", label: "Up to 3 hours" },
+  { value: "half-day", label: "Half day (up to 5 hours)" },
+  { value: "full-day", label: "Full day (up to 8 hours)" },
+  { value: "all-day", label: "Long day (up to 12 hours)" },
 ];
 
 const DRIVE_OPTIONS: { value: DriveTimeOption; label: string }[] = [
@@ -191,10 +191,16 @@ export function HikeFinder() {
             Your preferences
           </h2>
 
-        <fieldset className={`mt-6 ${fieldsetClass}`}>
+        <fieldset
+          className={`mt-6 ${fieldsetClass}`}
+          aria-describedby="total-time-hint"
+        >
           <legend className="text-base font-semibold text-slate-900">
             1. How much total time do you have?
           </legend>
+          <p id="total-time-hint" className="mt-1 text-sm text-slate-500">
+            Includes driving there and back
+          </p>
           <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
             {TOTAL_TIME_OPTIONS.map((opt) => (
               <label
